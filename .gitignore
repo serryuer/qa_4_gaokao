@@ -1,0 +1,10 @@
+863
+.vscode
+*.dataset
+*.pkl
+*.pt
+experiments/*/*
+*resource*
+data/processed/*
+log/*
+*/resource/* 

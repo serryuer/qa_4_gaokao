@@ -254,7 +254,7 @@ if __name__ == '__main__':
     from transformers import AutoTokenizer, AutoModelForMaskedLM
     tokenizer = AutoTokenizer.from_pretrained("bert-base-chinese")
     dataset = QAGraphDataset(
-        root = '/mnt/nlp-lq/yujunshuai/code/QA/data/',
+        root = '../data/',
         file = 'processed_train_data.json',
         tokenizer=tokenizer)
     print(len(dataset))

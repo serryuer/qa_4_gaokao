@@ -1,9 +1,41 @@
 # QA classification
 
+# Get Started
+
+```
+# 1. 原始数据格式转化成json，生成data/train_data.json、data/test_data.json
+python datasets/data_prepare.py
+
+# 2. 基于规则计算每个句子的属性特征以及基础统计特征
+python datasets/cal_statistics.py
+
+# 3. 模型训练
+# 目前最优模型
+python hgcn_main.py \
+    -lr 1e-5 \
+    -gcn_layers 2 \
+    -device 5 \
+    -model_name qa_graph_gcn_bert \
+    -conv_type gcn \
+    -use_bert True
+
+# 4. 记载模型并测试
+python hgcn_main.py \
+    -lr 1e-5 \
+    -gcn_layers 2 \
+    -device 3 \
+    -model_name qa_graph_gcn_bert \
+    -conv_type gcn \
+    -use_bert True \
+    -test True \
+    -best_model_path ./experiments/save_model/qa_graph_gcn_bert/best-validate-model.pt
+
+```
+
 # 基于规则的方法
 
 | precision	| recall |
-|  ----  | ----  | ----  |
+|  ----  | ----  |
 | 0.33 | 0.50 | 
 | 0.33 | 0.50 | 
 | 0.33 | 0.67 | 
@@ -15,7 +47,6 @@
 | 0.67 | 0.57 | 
 | 0.67 | 0.67 | 
 | **0.43** | **0.54** | 
-
 
 # 规则+GCN/GAT/HGAT
 
@@ -54,21 +85,3 @@
 | sent_bert + word_bert | * | * | 
 | sent_bert_finetune | * | * | 
 | sent_bert_finetune + word_bert_finetune | * | * | 
-
-### GAT
-| config | precision | recall |
-|  ----  | ----  | ----  |
-| GAT | 0.333 | 0.524 |
-| GAT+bert | * | * | 
-| GAT+bert finetune | * | * | 
-
-
-### HGAT
-
-### HGAT + attention_heads
-| config | precision | recall |
-|  ----  | ----  | ----  |
-| ** | * | * | 
-| ** | * | * | 
-| ** | * | * | 
-| ** | * | * |

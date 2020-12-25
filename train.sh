@@ -191,4 +191,4 @@ python hgcn_main.py \
     -conv_type gcn \
     -use_bert True \
     -test True \
-    -best_model_path /mnt/nlp-lq/yujunshuai/code/QA/experiments/save_model/qa_graph_gcn_bert/best-validate-model.pt
+    -best_model_path ./experiments/save_model/qa_graph_gcn_bert/best-validate-model.pt

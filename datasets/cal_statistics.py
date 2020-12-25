@@ -16,15 +16,14 @@ def read_file(file, type='normal'):
         return data
 
 
-shot_matrix_file = '/mnt/nlp-lq/yujunshuai/code/QA/datasets/resource/shotjuzhen.txt'
-stopwords_file = '/mnt/nlp-lq/yujunshuai/code/QA/datasets/resource/StopWordTable.txt'
-frame_lexunits_file = '/mnt/nlp-lq/yujunshuai/code/QA/datasets/resource/dbo.lex_frame.csv'
-frame_information_file = '/mnt/nlp-lq/yujunshuai/code/QA/datasets/resource/dbo.ch_en_name.csv'
-match_words_file = '/mnt/nlp-lq/yujunshuai/code/QA/datasets/resource/dbo.matchwords.csv'
-wordvec_file = '/mnt/nlp-lq/yujunshuai/code/QA/datasets/resource/dbo.frameVector.csv'
-alert_words_file = '/mnt/nlp-lq/yujunshuai/code/QA/datasets/resource/alert_words.txt'
+shot_matrix_file = './datasets/resource/shotjuzhen.txt'
+stopwords_file = './datasets/resource/StopWordTable.txt'
+frame_lexunits_file = './datasets/resource/dbo.lex_frame.csv'
+frame_information_file = './datasets/resource/dbo.ch_en_name.csv'
+match_words_file = './datasets/resource/dbo.matchwords.csv'
+wordvec_file = './datasets/resource/dbo.frameVector.csv'
+alert_words_file = './datasets/resource/alert_words.txt'
 
-data_file = '/mnt/nlp-lq/yujunshuai/code/QA/data/train_data.json'
 
 shot_matrix = read_file(shot_matrix_file)
 stop_word = read_file(stopwords_file)
@@ -433,11 +432,11 @@ def predict(sample):
     return pagerank(sample)
 
 
-if __name__ == '__main__':
+def format_dataset(input_file, output_file, tag='train dataset'):
     all_precisions = []
     all_recalls = []
-    with open(data_file) as f, open('train_res.json', 'w') as f1:
-        for line in tqdm(f):
+    with open(input_file) as f, open(output_file, 'w') as f1:
+        for line in tqdm(f, desc=f'cal rule based features for {tag}'):
             if line.strip() == '':
                 continue
             data = json.loads(line)
@@ -451,12 +450,14 @@ if __name__ == '__main__':
             all_recalls.append(count/len(sample.answers))
             print(f"precision: {all_precisions[-1]}, recall: {all_recalls[-1]}")
             print(f"precision: {sum(all_precisions)/len(all_precisions)}, recall: {sum(all_recalls)/len(all_recalls)}")
-            data['pred'] = [item['node'] for item in res[:6]]
-            # f1.write(json.dumps(data, ensure_ascii=False) + '\n')
+            # data['pred'] = [item['node'] for item in res[:6]]
             new_data = {}
-            new_data['questiom'] = sample.question.sent
+            new_data['question'] = sample.question.sent
             sentences = [(sentence.sent, sentence.artical_id, len(sample.contents), sentence.paragraph_id, sentence.paragraph_count, sentence.sent_id, sentence.sent_count, sentence.topic_score, sentence.perspective_score, sentence.frame_score, sentence.sen_score, sentence.pagerank) for id in sample.contents for p in sample.contents[id] for sentence in sample.contents[id][p]]
             new_data['sentences'] = sentences
             new_data['labels'] = [1 if sent in sample.answers else 0 for sent in [item[0] for item in sentences]]
             f1.write(json.dumps(new_data, ensure_ascii=False) + '\n')
-            
+        
+if __name__ == '__main__':
+    format_dataset('./data/train_data.json', './data/processed_train_data.json')
+    # format_dataset('./data/test_data.json', './data/processed_test_data.json', tag='test dataset')

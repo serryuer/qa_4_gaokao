@@ -9,7 +9,6 @@ from sklearn.metrics import *
 from tensorboardX import SummaryWriter
 from tqdm import tqdm
 
-
 C_LogFormat = '%(asctime)s - %(levelname)s - %(message)s'
 # setting log format
 logging.basicConfig(level=logging.INFO, format=C_LogFormat)
@@ -169,7 +168,7 @@ class Train(object):
             res = {}
             res['validation_precision'] = val_score['precision']
             res['validation_recall'] = val_score['recall']
-            res['train_precision'] = sum(total_recall)/(batch_count + 1)
+            res['train_precision'] = sum(total_precision)/(batch_count + 1)
             res['train_recall'] = sum(total_recall)/(batch_count + 1)
             with open(os.path.join(self.save_model_path, f'metrics_epoch_{epoch}.json'), mode='w') as f:
                 f.write(json.dumps(res) + '\n')
@@ -180,7 +179,7 @@ class Train(object):
     def test(self, data_loader, input_file, output_file, best_model_path):
         logging.info(self.model_name + ":" + "## Start to test. ##")
         self.model.eval()
-        self.model.load_state_dict(torch.load(best_model_path))
+        self.model.load_state_dict(torch.load(best_model_path, map_location=f'cuda:{self.device}'))
         predicts = []
         logits = []
         total_precision = []
@@ -194,7 +193,7 @@ class Train(object):
                 predicts.extend([1 if i in sorted_logits[:6] else 0 for i in range(len(sorted_logits))])
                 total_precision.append(precision)
                 total_recall.append(recall)
-        result = {}
+        result = {} 
         result['precision'] = sum(total_precision)/(batch_count + 1)
         result['recall'] = sum(total_recall)/(batch_count + 1)
         result['f1'] = 0 if precision == 0 else (2 * (sum(total_precision)/(batch_count + 1)) * sum(total_recall)/(batch_count + 1)) / (sum(total_precision)/(batch_count + 1) + sum(total_recall)/(batch_count + 1))

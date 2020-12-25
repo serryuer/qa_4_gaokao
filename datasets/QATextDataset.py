@@ -121,8 +121,8 @@ if __name__ == '__main__':
     from transformers import AutoTokenizer, AutoModelForMaskedLM
     tokenizer = AutoTokenizer.from_pretrained("bert-base-chinese")
     dataset = QATextDataset(
-        root = '/mnt/nlp-lq/yujunshuai/code/QA/data/',
-        file = '/mnt/nlp-lq/yujunshuai/code/QA/data/train_new.csv',
+        root = '../data/',
+        file = '../data/train_new.csv',
         tokenizer=tokenizer)
     print(len(dataset))
     print(dataset[0])

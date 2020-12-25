@@ -216,12 +216,12 @@ class HGCNForTextClassification(torch.nn.Module):
                     _, [h_n, _] = self.blstm(packed)
                     encode_feature = h_n.mean(dim=0).squeeze(0)
             elif node_type[i].item() == 1:
+                encode_feature = torch.matmul(torch.t(node_feature).float(), self.features_embedding)
+            else:
                 if self.word_embedding_bert:
                     pass
                 else:
-                    encode_feature = torch.matmul(torch.t(node_feature).float(), self.features_embedding)
-            else:
-                encode_feature = self.word_embedding(node_feature[0]).squeeze(0)
+                    encode_feature = self.word_embedding(node_feature[0]).squeeze(0)
             encode_node_features.append(encode_feature)
         node_features = torch.stack(encode_node_features, dim=0)
         

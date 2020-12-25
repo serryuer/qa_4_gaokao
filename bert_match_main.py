@@ -39,13 +39,13 @@ torch.cuda.manual_seed(args.random_seed)
 if __name__ == '__main__':
     tokenizer = BertTokenizer.from_pretrained("bert-base-chinese")
     
-    train_dataset = QATextDataset(root='/mnt/nlp-lq/yujunshuai/code/QA/data',
-                             file='/mnt/nlp-lq/yujunshuai/code/QA/data/train_new.csv',
+    train_dataset = QATextDataset(root='./data',
+                             file='./data/train_new.csv',
                              tokenizer=tokenizer,
                              is_test=False)
     
-    test_dataset = QATextDataset(root='/mnt/nlp-lq/yujunshuai/code/QA/data',
-                             file='/mnt/nlp-lq/yujunshuai/code/QA/data/test_new.csv',
+    test_dataset = QATextDataset(root='./data',
+                             file='./data/test_new.csv',
                              tokenizer=tokenizer,
                              is_test=True)
     
@@ -83,8 +83,8 @@ if __name__ == '__main__':
                     metric=accuracy_score,
                     num_class=2,
                     tensorboard_path=f'./experiments/tensorboard_log/{args.model_name}')
-                    # model_cache='/mnt/nlp-lq/yujunshuai/code/QA/experiments/save_model/mr-gcn-layer-3/best-validate-model.pt')
+                    # model_cache='./experiments/save_model/mr-gcn-layer-3/best-validate-model.pt')
     print(trainer.eval())
     print(trainer.train())
-    # print(trainer.test('/mnt/nlp-lq/yujunshuai/code/QA/data/test.csv', '/mnt/nlp-lq/yujunshuai/code/QA/data/test_res.csv'))
-    # print(trainer.test(test_loader, '/mnt/nlp-lq/yujunshuai/code/QA/data/test_new.csv', '/mnt/nlp-lq/yujunshuai/code/QA/data/test_new_res.csv'))
+    # print(trainer.test('./data/test.csv', './data/test_res.csv'))
+    # print(trainer.test(test_loader, './data/test_new.csv', './data/test_new_res.csv'))

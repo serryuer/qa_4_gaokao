@@ -35,8 +35,8 @@ parser.add_argument('-finetune_bert',type=bool,default=False,help='whether finet
 parser.add_argument('-edge_mask',type=str,default='111111',help='edge mask')
 parser.add_argument('-conv_type',type=str,default='gcn',help='graph convolution type')
 
-parser.add_argument('-test',type=bool,default=True,help='whether test')
-parser.add_argument('-best_model_path',type=str,default='/mnt/nlp-lq/yujunshuai/code/QA/experiments/save_model/qa_graph_gcn_bert/best-validate-model.pt',help='best model path')
+parser.add_argument('-test',type=bool,default=False,help='whether test')
+parser.add_argument('-best_model_path',type=str,default=None,help='best model path')
 
 
 args = parser.parse_args()
@@ -49,12 +49,12 @@ torch.cuda.manual_seed(args.random_seed)
 if __name__ == '__main__':
     tokenizer = BertTokenizer.from_pretrained("bert-base-chinese")
     
-    train_dataset = QAGraphDataset(root='/mnt/nlp-lq/yujunshuai/code/QA/data',
+    train_dataset = QAGraphDataset(root='./data',
                              file='processed_train_data.json',
                              tokenizer=tokenizer,
                              is_test=False)
     
-    test_dataset = QAGraphDataset(root='/mnt/nlp-lq/yujunshuai/code/QA/data',
+    test_dataset = QAGraphDataset(root='./data',
                              file='processed_modified_test_data.json',
                              tokenizer=tokenizer,
                              is_test=True)
@@ -104,6 +104,6 @@ if __name__ == '__main__':
                     tensorboard_path=f'./experiments/tensorboard_log/{args.model_name}')
                     
     if args.test and args.best_model_path:
-        print(trainer.test(test_loader, '/mnt/nlp-lq/yujunshuai/code/QA/data/processed_modified_test_data.json', '/mnt/nlp-lq/yujunshuai/code/QA/data/processed_modified_test_data_result.json', args.best_model_path))
+        print(trainer.test(test_loader, './data/processed_modified_test_data.json', './data/processed_modified_test_data_result.json', args.best_model_path))
     else:
         print(trainer.train())

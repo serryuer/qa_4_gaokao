@@ -2,11 +2,11 @@ import os, sys, json
 
 
 labels = []
-with open('/mnt/nlp-lq/yujunshuai/code/QA/data/modified_test.csv') as f:
+with open('./data/modified_test.csv') as f:
     for line in f:
         labels.append(1 if line.strip()[-2:] == '11' else 0)
 
-with open('/mnt/nlp-lq/yujunshuai/code/QA/data/processed_test_data.json') as f, open('/mnt/nlp-lq/yujunshuai/code/QA/data/processed_modified_test_data.json', 'w') as f1:
+with open('./data/processed_test_data.json') as f, open('./data/processed_modified_test_data.json', 'w') as f1:
     start = 0
     for line in f:
         data = json.loads(line)

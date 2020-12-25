@@ -1,13 +1,5 @@
 import os, sys, json, re
-from ltp import LTP
-
-ltp = LTP('base')
-
-root_dir = '/mnt/nlp-lq/yujunshuai/code/QA/data/raw/train'
-save_path = '/mnt/nlp-lq/yujunshuai/code/QA/data/train_data.json'
-
-folders = {folder : os.path.join(root_dir, folder) for folder in os.listdir(root_dir)}
-folders = {tag: [os.path.join(folder, item) for item in os.listdir(folder)] for tag, folder in folders.items()}
+from tqdm import tqdm
 
 def construct_sample(question_file, resource_file, answer_file):
     with open(question_file) as f1, open(resource_file) as f2, open(answer_file) as f3:
@@ -56,9 +48,11 @@ def construct_sample(question_file, resource_file, answer_file):
         # return data
     return data
     
-if __name__ == '__main__':
+def format_dataset(root_dir, save_path, tag='train dataset'):
+    folders = {folder : os.path.join(root_dir, folder) for folder in os.listdir(root_dir)}
+    folders = {tag: [os.path.join(folder, item) for item in os.listdir(folder)] for tag, folder in folders.items()}    
     data_list = []
-    for tag in folders:
+    for tag in tqdm(folders, desc=f"processing {tag}"):
         sub_folders = folders[tag]
         for folder in sub_folders:
             if folder.endswith('.DS_Store'):
@@ -69,5 +63,10 @@ if __name__ == '__main__':
     with open(save_path, mode='w') as f:
         for data in data_list:
             f.write(json.dumps(data, ensure_ascii=False) + '\n')
+    
+if __name__ == '__main__':
+    format_dataset('./data/raw/train', './data/train_data.json')
+    format_dataset('./data/raw/test', './data/test_data.json', tag='test dataset')
+
         
         
